@@ -52,6 +52,7 @@ var loadEvents = function() {
 };
 
 loadEvents();
+auditEvents();
 setInterval(function() {
     auditEvents();
 }, (1000 * 60) * 60);
