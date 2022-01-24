@@ -1,51 +1,57 @@
-// events array
-var events = {
-    eventsArr: []
-};
-
 // current day 
 var currentDayEl = document.querySelector("#currentDay");
-var currentDay = moment().format("MMMM Do, YYYY");
+var currentDay = moment().format("dddd, MMMM Do");
 currentDayEl.innerHTML = currentDay;
 
-$(".description").on("click", "span", function() {
-    var text = $(this)
-        .text()
-        .trim();
-    console.log(text);
-    
-    var textInput = $("<textarea>")
-        .addClass("col-10")
-        .val(text);
-    $(this).replaceWith(textInput);
-    textInput.trigger("focus");
-});
+// audit for past, present, future
+var auditEvents = function() {
+    // get current time
+    var now = moment().format("hA");
+    console.log(now);
 
+    // for each hour 
+    $(".hour").each(function() {
+    var hour = $(this).text().trim();
+    console.log(hour);    
+    if (now > hour) {
+        $(".description").addClass("past");
+    }
+    else if (now < hour) {
+        $(".description").addClass("future");
+    }
+    else {
+        $(".description").addClass("present");
+    }
+    });
+}
+
+// click on save button
 $(".saveBtn").on("click", function() {
-    var text = $("textarea")
-        .val();
-    console.log(text)
-    // events[eventsArr][index].text = text;
-    // saveEvents();
-
-    // recreate the span
-    var textSpan = $("<span>")
-        .addClass("col-10")
-        .text(text);
-
-    // replace textarea with p
-    $("textarea").replaceWith(textSpan);
-    
+    // loop through each text area
+    $("textarea").each(function() {
+        // get the value
+        var eventText = $(this).val();
+        // get the id
+        var eventNum = $(this).attr("id");
+        // save to local storage
+        localStorage.setItem(eventNum, eventText);
+    });
 });
-
-var saveEvents = function() {
-    localStorage.setItem("events", JSON.stringify(events));
-};
 
 var loadEvents = function() {
-    events = JSON.parse(localStorage.getItem("events"));
+    // get item from each
+    $("#9").val(localStorage.getItem("9"));
+    $("#10").val(localStorage.getItem("10"));
+    $("#11").val(localStorage.getItem("11"));
+    $("#12").val(localStorage.getItem("12"));
+    $("#1").val(localStorage.getItem("1"));
+    $("#2").val(localStorage.getItem("2"));
+    $("#3").val(localStorage.getItem("3"));
+    $("#4").val(localStorage.getItem("4"));
+    $("#5").val(localStorage.getItem("5"));
+};
 
-    if (!events) {
-        events = {}
-    }
-}
+loadEvents();
+setInterval(function() {
+    auditEvents();
+}, (1000 * 60) * 60);
